@@ -1,10 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { FastifyInstance } from "fastify";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod"
 import dayjs from "dayjs"
 import { getMailClient } from "@/lib/mailer";
 import nodemailer from "nodemailer"
+
+dayjs.extend(localizedFormat)
 
 export async function createTrip(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
@@ -62,6 +65,11 @@ export async function createTrip(app: FastifyInstance) {
         }
       })
 
+      const formattedStartDate = dayjs(starts_at).format("LLL")
+      const formattedEndDate = dayjs(ends_at).format("LLL")
+
+      const confirmationLink = `http://localhost:3333/trips/${trip.id}/confirm`
+
       const mail = await getMailClient()
 
       const message = await mail.sendMail({
@@ -73,8 +81,23 @@ export async function createTrip(app: FastifyInstance) {
           name: owner_name,
           address: owner_email
         },
-        subject: "Your trip has been created",
-        html: `<p>Your has trip has been successfully created. You can access the details of it and invite new users clicking here.</p>`
+        subject: `Confirm your trip to ${destination} on ${formattedStartDate}`,
+          
+        html: `
+          <div style="font-family: sans-serif; font-size: 16px; line-height: 1.6;">
+          <p>You request the creation of a trip to <strong>${destination}</strong>, on the dates of <strong>${formattedStartDate}</strong> to <strong>${formattedEndDate}</strong></p>
+          <p></p>
+          <p>To confirm the trip, please click on the following link: </p>
+          <p></p>
+          <p>
+            <a href="${confirmationLink}">
+              Confirm trip
+            </a>
+          </p>
+          <p></p>
+          <p>Case you don't know what this email is about, please ignore it.</p>
+          </div>
+        `.trim()
       })
 
       console.log(nodemailer.getTestMessageUrl(message))

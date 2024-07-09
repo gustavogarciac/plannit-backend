@@ -1,4 +1,5 @@
 import fastify from "fastify"
+import { prisma } from "./lib/prisma"
 
 const app = fastify()
 

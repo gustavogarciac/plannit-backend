@@ -6,6 +6,8 @@ import fastifySwaggerUi from "@fastify/swagger-ui"
 import { createTrip } from "./routes/create-trip"
 import { confirmTrip } from "./routes/confirm-trip"
 import { confirmParticipant } from "./routes/confirm-participant"
+import { createActivity } from "./routes/create-activity"
+import { getActivities } from "./routes/get-activities"
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -33,5 +35,7 @@ app.setSerializerCompiler(serializerCompiler)
 app.register(createTrip)
 app.register(confirmTrip)
 app.register(confirmParticipant)
+app.register(createActivity)
+app.register(getActivities)
 
 app.listen({ port: 3333 }).then(() => console.log("HTTP server is running"))

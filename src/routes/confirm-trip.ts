@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import dayjs from "dayjs";
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
 import { z } from "zod";
 
 
@@ -17,11 +17,6 @@ export async function confirmTrip(app: FastifyInstance) {
         params: z.object({
           tripId: z.string().uuid()
         }),
-        response: {
-          // 201: z.object({
-          //   tripId: z.string().uuid()
-          // })
-        }
       }
     },
     async (req, reply) => {
@@ -60,7 +55,7 @@ export async function confirmTrip(app: FastifyInstance) {
 
       await Promise.all(
         participants.map(async (participant) => {
-          const confirmationLink = `http://localhost:3333/trips/${trip.id}/confirm/${participant.id}`
+          const confirmationLink = `http://localhost:3333/participants/${participant.id}/confirm/`
 
           const message = await mail.sendMail({
             from: {

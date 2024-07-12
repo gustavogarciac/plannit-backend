@@ -4,26 +4,25 @@ import { z } from 'zod'
 
 import { prisma } from '@/lib/prisma'
 
-export async function getLinks(app: FastifyInstance) {
+export async function getTripDetails(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get(
-    '/trips/:tripId/links',
+    '/trips/:tripId',
     {
       schema: {
-        summary: 'Get links',
-        tags: ['links'],
+        summary: 'Get trip details',
+        tags: ['trips'],
         params: z.object({
           tripId: z.string().uuid(),
         }),
         response: {
-          201: z.object({
-            links: z.array(
-              z.object({
-                id: z.string().uuid(),
-                title: z.string(),
-                url: z.string().url(),
-                trip_id: z.string().uuid(),
-              }),
-            ),
+          200: z.object({
+            trip: z.object({
+              id: z.string().uuid(),
+              destination: z.string(),
+              starts_at: z.date(),
+              ends_at: z.date(),
+              is_confirmed: z.boolean(),
+            }),
           }),
         },
       },
@@ -35,14 +34,18 @@ export async function getLinks(app: FastifyInstance) {
         where: {
           id: tripId,
         },
-        include: {
-          links: true,
+        select: {
+          destination: true,
+          starts_at: true,
+          ends_at: true,
+          id: true,
+          is_confirmed: true,
         },
       })
 
       if (!trip) throw new Error('Trip not found')
 
-      return reply.status(201).send({ links: trip.links })
+      return reply.status(201).send({ trip })
     },
   )
 }

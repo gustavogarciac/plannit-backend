@@ -11,7 +11,7 @@ export async function updateTrip(app: FastifyInstance) {
     '/trips/:tripId',
     {
       schema: {
-        summary: 'Create a new trip',
+        summary: 'Update a trip',
         tags: ['trips'],
         params: z.object({
           tripId: z.string().uuid(),
@@ -22,9 +22,7 @@ export async function updateTrip(app: FastifyInstance) {
           ends_at: z.coerce.date(),
         }),
         response: {
-          201: z.object({
-            tripId: z.string().uuid(),
-          }),
+          204: z.null(),
         },
       },
     },
@@ -60,7 +58,7 @@ export async function updateTrip(app: FastifyInstance) {
         },
       })
 
-      return reply.status(204).send()
+      return reply.status(204).send(null)
     },
   )
 }

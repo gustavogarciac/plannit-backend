@@ -1,28 +1,29 @@
-import { prisma } from "@/lib/prisma";
-import { FastifyInstance } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { z } from "zod";
+import { FastifyInstance } from 'fastify'
+import { ZodTypeProvider } from 'fastify-type-provider-zod'
+import { z } from 'zod'
+
+import { prisma } from '@/lib/prisma'
 
 export async function createLink(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
-    "/trips/:tripId/links",
+    '/trips/:tripId/links',
     {
       schema: {
-        summary: "Create a new link",
-        tags: ["links"],
+        summary: 'Create a new link',
+        tags: ['links'],
         params: z.object({
-          tripId: z.string().uuid()
+          tripId: z.string().uuid(),
         }),
         body: z.object({
           title: z.string().min(4),
-          url: z.string().url()
+          url: z.string().url(),
         }),
         response: {
           201: z.object({
-            linkId: z.string().uuid()
-          })
-        }
-      }
+            linkId: z.string().uuid(),
+          }),
+        },
+      },
     },
     async (req, reply) => {
       const { tripId } = req.params
@@ -30,21 +31,21 @@ export async function createLink(app: FastifyInstance) {
 
       const trip = await prisma.trip.findUnique({
         where: {
-          id: tripId
-        }
+          id: tripId,
+        },
       })
 
-      if(!trip) throw new Error("Trip not found")
+      if (!trip) throw new Error('Trip not found')
 
       const link = await prisma.link.create({
         data: {
           url,
           title,
-          trip_id: tripId
-        }
+          trip_id: tripId,
+        },
       })
 
       return reply.status(201).send({ linkId: link.id })
-    }
+    },
   )
 }

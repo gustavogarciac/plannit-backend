@@ -9,6 +9,7 @@ import {
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
 
+import { env } from './env'
 import { errorHandler } from './error-handler'
 import { confirmParticipant } from './routes/confirm-participant'
 import { confirmTrip } from './routes/confirm-trip'
@@ -61,4 +62,4 @@ app.register(updateTrip)
 app.register(getTripDetails)
 app.register(getParticipantDetails)
 
-app.listen({ port: 3333 }).then(() => console.log('HTTP server is running'))
+app.listen({ port: env.PORT }).then(() => console.log('HTTP server is running'))

@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
+import { ClientError } from '@/errors/client-error'
 import { prisma } from '@/lib/prisma'
 
 export async function getParticipantDetails(app: FastifyInstance) {
@@ -41,7 +42,7 @@ export async function getParticipantDetails(app: FastifyInstance) {
         },
       })
 
-      if (!participant) throw new Error('Participant not found')
+      if (!participant) throw new ClientError('Participant not found')
 
       return reply.status(200).send({ participant })
     },

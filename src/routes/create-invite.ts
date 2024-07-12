@@ -3,6 +3,7 @@ import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import nodemailer from 'nodemailer'
 import { z } from 'zod'
 
+import { ClientError } from '@/errors/client-error'
 import { dayjs } from '@/lib/dayjs'
 import { getMailClient } from '@/lib/mailer'
 import { prisma } from '@/lib/prisma'
@@ -37,7 +38,7 @@ export async function createInvite(app: FastifyInstance) {
         },
       })
 
-      if (!trip) throw new Error('Trip not found')
+      if (!trip) throw new ClientError('Trip not found')
 
       const participantAlreadyInvited = await prisma.participant.findFirst({
         where: {
@@ -47,7 +48,7 @@ export async function createInvite(app: FastifyInstance) {
       })
 
       if (participantAlreadyInvited) {
-        throw new Error('Participant already invited')
+        throw new ClientError('Participant already invited')
       }
 
       const participant = await prisma.participant.create({

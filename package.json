@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts"
+    "dev": "tsx watch src/server.ts",
+    "lint": "eslint src/**.ts --fix"
   },
   "keywords": [],
   "author": "",
@@ -11,6 +12,11 @@
   "description": "",
   "devDependencies": {
     "@types/node": "^20.14.10",
+    "@rocketseat/eslint-config": "^2.2.2",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
+    "prettier": "^3.2.5",
     "prisma": "^5.16.1",
     "tsx": "^4.16.2",
     "typescript": "^5.5.3"

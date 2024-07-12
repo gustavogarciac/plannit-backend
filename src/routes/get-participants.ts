@@ -10,7 +10,7 @@ export async function getParticipants(app: FastifyInstance) {
     {
       schema: {
         summary: 'Get participants',
-        tags: ['links'],
+        tags: ['participants'],
         params: z.object({
           tripId: z.string().uuid(),
         }),
@@ -22,8 +22,6 @@ export async function getParticipants(app: FastifyInstance) {
                 name: z.string().nullable(),
                 email: z.string(),
                 is_confirmed: z.boolean(),
-                is_owner: z.boolean(),
-                trip_id: z.string(),
               }),
             ),
           }),
@@ -38,7 +36,14 @@ export async function getParticipants(app: FastifyInstance) {
           id: tripId,
         },
         include: {
-          participants: true,
+          participants: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              is_confirmed: true,
+            },
+          },
         },
       })
 
